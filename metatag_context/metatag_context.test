@@ -49,24 +49,56 @@ class MetatagContextTest extends MetatagTestHelper {
    * Performs the basic tests.
    */
   public function testMetatagContextBasic() {
-    // Create content type node.
-    $this->drupalPost('node/add/' . $this->hyphen_type, array('title' => $this->randomName(8)), t('Save'));
-    $this->context_name = drupal_strtolower($this->randomName(8));
+    // Create a node and assign meta tags.
+    $node_data = array(
+      'title' => $this->randomName(8),
+      'metatags[und][title][value]' => 'My node title',
+      'metatags[und][description][value]' => 'My node description',
+      'metatags[und][abstract][value]' => 'My node abstract',
+      'metatags[und][keywords][value]' => 'My node keywords',
+    );
+    $this->drupalPost('node/add/' . $this->hyphen_type, $node_data, t('Save'));
 
+    // Test meta tags on node.
+    $metatag_object = $this->createMetatagObject('node/1', 'node_metatags');
+    foreach ($node_data as $key => $value) {
+      // Extract meta tag type from key.
+      if (preg_match("/metatags\[und\]\[(.*)\]\[value\]/", $key, $matches)) {
+        $type = $matches[1];
+        $metatag_object->{$type} = $value;
+      }
+    }
+    $this->checkMetatags($metatag_object);
+
+    // Create metatag contexts.
+    $this->context_name = drupal_strtolower($this->randomName(8));
     // Generate metatags and check content.
-    $this->metatag_pages['node'] = $this->createMetatagObject('node/1', 'node_metatags');
-    $this->metatag_pages['page'] = $this->createMetatagObject('<front>', 'frontpage_metatags');
+    $this->metatag_pages['node'] = $this->createMetatagObject('node/1', 'context_node_metatags');
+    $this->metatag_pages['page'] = $this->createMetatagObject('<front>', 'context_frontpage_metatags');
     foreach ($this->metatag_pages as $page) {
       $this->generateMetatag($page);
       $this->editMetatag($page);
+      // Check meta tags.
       $this->checkMetatags($page);
     }
 
-    // Edit metatag and check content.
+    // Edit title and check that it overrides the node title.
     $this->metatag_pages['node']->title = 'New title';
-    $this->metatag_pages['node']->description = '';
     $this->editMetatag($this->metatag_pages['node']);
     $this->checkMetatags($this->metatag_pages['node']);
+
+    // Check that by clearing values on context, it will fallback to node meta tags.
+    $node_metatag = $this->metatag_pages['node'];
+    foreach ($node_data as $key => $value) {
+      // Extract meta tag type from key.
+      if (preg_match("/metatags\[und\]\[(.*)\]\[value\]/", $key, $matches)) {
+        $type = $matches[1];
+        $this->metatag_pages['node']->{$type} = '';
+        $node_metatag->{$type} = $value;
+      }
+    }
+    $this->editMetatag($this->metatag_pages['node']);
+    $this->checkMetatags($node_metatag);
   }
 
   /**
@@ -144,17 +176,19 @@ class MetatagContextTest extends MetatagTestHelper {
   function checkMetatags($metatag_object) {
     $options = array('description', 'abstract', 'keywords');
     $this->drupalGet($metatag_object->path);
+    $this->assertResponse(200, 'Found path: ' . $metatag_object->path);
 
     foreach ($options as $option) {
-      if (!empty($metatag_object->{$option})) {
-        $this->assertRaw($metatag_object->{$option}, $option . ' found in ' . $metatag_object->path);
+      if (isset($metatag_object->{$option})) {
+        $xpath = $this->xpath("//meta[@name='" .$option ."']");
+        $this->assertEqual($xpath[0]['content'], $metatag_object->{$option}, 'Meta ' . $option . ' = ' . $metatag_object->{$option});
       }
       else {
         $this->assertNoRaw('<meta name="' . $option, $option . ' not found in ' . $metatag_object->path);
       }
     }
-    if (!empty($metatag_object->title)) {
-      $this->assertRaw($metatag_object->title, 'Title found in ' . $metatag_object->path);
+    if (isset($metatag_object->title)) {
+      $this->assertRaw('<title>' . $metatag_object->title . '</title>', 'Title = ' . $metatag_object->title);
     }
   }
 }
