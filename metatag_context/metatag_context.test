@@ -32,7 +32,9 @@ class MetatagContextTest extends MetatagTestHelper {
     // Create user.
     $perms = array(
       'bypass node access',
+      'administer taxonomy',
     );
+
     $this->adminUser = $this->createAdminUser($perms);
     $this->drupalLogin($this->adminUser);
 
@@ -49,11 +51,22 @@ class MetatagContextTest extends MetatagTestHelper {
    * Performs the basic tests.
    */
   public function testMetatagContextBasic() {
+    // Create term.
+    $this->drupalPost('admin/structure/taxonomy/add', array(
+      'name' => 'mc_test Vocabulary',
+      'machine_name' => 'mc_test_vocabulary'
+    ), t('Save'));
+    $this->drupalPost('admin/structure/taxonomy/mc_test_vocabulary/add', array(
+      'name' => 'mc_test Term'
+    ), t('Save'));
+    $this->drupalGet('taxonomy/term/1');
+
     // Create content type node.
-    $this->drupalPost('node/add/' . $this->hyphen_type, array('title' => $this->randomName(8)), t('Save'));
+    $this->drupalPost('node/add/' . $this->hyphen_type, array('title' => 'mc_test Title'), t('Save'));
     $this->context_name = drupal_strtolower($this->randomName(8));
 
     // Generate metatags and check content.
+    $this->metatag_pages['term'] = $this->createMetatagObject('taxonomy/term/1', 'term_metatags');
     $this->metatag_pages['node'] = $this->createMetatagObject('node/1', 'node_metatags');
     $this->metatag_pages['page'] = $this->createMetatagObject('<front>', 'frontpage_metatags');
     foreach ($this->metatag_pages as $page) {
@@ -62,11 +75,17 @@ class MetatagContextTest extends MetatagTestHelper {
       $this->checkMetatags($page);
     }
 
-    // Edit metatag and check content.
-    $this->metatag_pages['node']->title = 'New title';
+    // Edit metatags and check content.
+    $this->metatag_pages['node']->title = '[node:title]';
     $this->metatag_pages['node']->description = '';
     $this->editMetatag($this->metatag_pages['node']);
+    $this->metatag_pages['node']->title = 'mc_test Title';
     $this->checkMetatags($this->metatag_pages['node']);
+
+    $this->metatag_pages['term']->title = '[term:name]';
+    $this->editMetatag($this->metatag_pages['term']);
+    $this->metatag_pages['term']->title = 'mc_test Term';
+    $this->checkMetatags($this->metatag_pages['term']);
   }
 
   /**
