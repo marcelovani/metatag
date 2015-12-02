@@ -1345,7 +1345,16 @@ function metatag_metatags_form(array &$form, $instance, array $metatags = array(
     // Check if each meta tag group is being displayed.
     if (!empty($group_metatag_access)) {
       // Built the token browser link.
-      $token_listing_link = theme('token_tree', array('token_types' => $options['token types'], 'dialog' => TRUE));
+      // for value "all" theme_token_tree() compares with string, not array
+      $token_types = (in_array('all', $options['token types']))
+        ? 'all'
+        : $options['token types'];
+      $token_listing_link = theme('token_tree',
+        array(
+          'token_types' => $token_types,
+          'dialog' => TRUE
+        )
+      );
 
       foreach ($group_metatag_access as $group_key => $token_access) {
         if ($token_access) {
