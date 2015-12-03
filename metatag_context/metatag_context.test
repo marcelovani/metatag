@@ -32,7 +32,9 @@ class MetatagContextTest extends MetatagTestHelper {
     // Create user.
     $perms = array(
       'bypass node access',
+      'administer taxonomy',
     );
+
     $this->adminUser = $this->createAdminUser($perms);
     $this->drupalLogin($this->adminUser);
 
@@ -49,9 +51,19 @@ class MetatagContextTest extends MetatagTestHelper {
    * Performs the basic tests.
    */
   public function testMetatagContextBasic() {
+    // Create term.
+    $this->drupalPost('admin/structure/taxonomy/add', array(
+      'name' => 'mc_test Vocabulary',
+      'machine_name' => 'mc_test_vocabulary'
+    ), t('Save'));
+    $this->drupalPost('admin/structure/taxonomy/mc_test_vocabulary/add', array(
+      'name' => 'mc_test Term'
+    ), t('Save'));
+    $this->drupalGet('taxonomy/term/1');
+
     // Create a node and assign meta tags.
     $node_data = array(
-      'title' => $this->randomName(8),
+      'title' => 'mc_test Title',
       'metatags[und][title][value]' => 'My node title',
       'metatags[und][description][value]' => 'My node description',
       'metatags[und][abstract][value]' => 'My node abstract',
@@ -73,6 +85,7 @@ class MetatagContextTest extends MetatagTestHelper {
     // Create metatag contexts.
     $this->context_name = drupal_strtolower($this->randomName(8));
     // Generate metatags and check content.
+    $this->metatag_pages['term'] = $this->createMetatagObject('taxonomy/term/1', 'context_term_metatags');
     $this->metatag_pages['node'] = $this->createMetatagObject('node/1', 'context_node_metatags');
     $this->metatag_pages['page'] = $this->createMetatagObject('<front>', 'context_frontpage_metatags');
     foreach ($this->metatag_pages as $page) {
@@ -82,10 +95,18 @@ class MetatagContextTest extends MetatagTestHelper {
       $this->checkMetatags($page);
     }
 
-    // Edit title and check that it overrides the node title.
-    $this->metatag_pages['node']->title = 'New title';
+    // Edit metatags and check content.
+    $this->metatag_pages['node']->title = '[node:title]';
+    $this->metatag_pages['node']->description = '';
     $this->editMetatag($this->metatag_pages['node']);
+    $this->metatag_pages['node']->title = 'mc_test Title';
+    $this->metatag_pages['node']->description = 'My node description';
     $this->checkMetatags($this->metatag_pages['node']);
+
+    $this->metatag_pages['term']->title = '[term:name]';
+    $this->editMetatag($this->metatag_pages['term']);
+    $this->metatag_pages['term']->title = 'mc_test Term';
+    $this->checkMetatags($this->metatag_pages['term']);
 
     // Check that by clearing values on context, it will fallback to node meta tags.
     $node_metatag = $this->metatag_pages['node'];
