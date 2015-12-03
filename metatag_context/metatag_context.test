@@ -66,7 +66,7 @@ class MetatagContextTest extends MetatagTestHelper {
     $this->context_name = drupal_strtolower($this->randomName(8));
 
     // Generate metatags and check content.
-    $this->metatag_pages['term'] = $this->createMetatagObject('taxonomy/term/1', 'term_metatags');
+    $this->metatag_pages['term'] = $this->createMetatagObject('taxonomy/term/1', 'context_term_metatags');
     $this->metatag_pages['node'] = $this->createMetatagObject('node/1', 'node_metatags');
     $this->metatag_pages['page'] = $this->createMetatagObject('<front>', 'frontpage_metatags');
     foreach ($this->metatag_pages as $page) {
