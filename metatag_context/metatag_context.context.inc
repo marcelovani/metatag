@@ -90,6 +90,20 @@ class metatag_context_reaction extends context_reaction {
       '#default_value' => isset($data['metatag_admin']) ? $data['metatag_admin'] : '',
     );
 
+    // Add weight for current metatag_context.
+    $default_weight = 0;
+    if (!empty($context->reactions['metatag_context_reaction']['weight'])) {
+      $default_weight = (int) $context->reactions['metatag_context_reaction']['weight'];
+    }
+    $form['weight'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Weight'),
+      '#size' => 2,
+      '#default_value' => $default_weight,
+      '#description' => t('A higher weight will make this context be executed later, overriding other context meta tags.'),
+      '#weight' => -99,
+    );
+
     return $form;
   }
 

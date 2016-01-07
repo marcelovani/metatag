@@ -9,10 +9,11 @@
  */
 function metatag_context_context_overview() {
   $contexts = context_enabled_contexts(TRUE);
-  $header = array(t('Name'), t('Paths'), t('Operations'));
-  $rows = array();
+  $contexts = metatag_context_sort_weight($contexts);
 
-  $caption = t('Values assigned here inherit from the <a href="@url" title="Edit the global default meta tags.">global defaults</a> and will override any other meta tags assigned elsewhere.', array('@url' => url('admin/config/search/metatags/config/global')));
+  $header = array(t('Name'), t('Paths'), t('Weight'), t('Operations'));  $rows = array();
+
+  $caption = t('Values assigned here inherit from the <a href="@url" title="Edit the global default meta tags.">global defaults</a>. Use the weight to specify the order the context meta tags run.', array('@url' => url('admin/config/search/metatags/config/global')));
 
   foreach ($contexts as $name => $context) {
     // Only show context items that are specifically selected to be "Shown on
@@ -25,6 +26,7 @@ function metatag_context_context_overview() {
       $rows[] = array(
         $context->name,
         isset($context->conditions['path']) ? htmlspecialchars(implode(', ', $context->conditions['path']['values'])) : t('No path condition.'),
+        isset($context->reactions['metatag_context_reaction']['weight']) ? $context->reactions['metatag_context_reaction']['weight'] : 0,
         implode(' | ', $ops),
       );
     }
@@ -142,7 +144,7 @@ function metatag_context_config_edit_form($form, &$form_state, $context) {
 
   $form['help'] = array(
     '#prefix' => '<hr /><p><em>',
-    '#markup' => t('Values assigned here inherit from the <a href="@url" title="Edit the global default meta tags.">global defaults</a> and will override any other meta tags assigned elsewhere.', array('@url' => url('admin/config/search/metatags/config/global'))),
+    '#markup' => t('Values assigned here inherit from the <a href="@url" title="Edit the global default meta tags.">global defaults</a>.', array('@url' => url('admin/config/search/metatags/config/global'))),
     '#suffix' => '</em></p>',
     '#weight' => -99,
   );

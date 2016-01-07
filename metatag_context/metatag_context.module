@@ -115,3 +115,45 @@ function metatag_context_ctools_plugin_api() {
     return array("version" => "3");
   }
 }
+
+/**
+ * Helper to sort contexts by weight.
+ *
+ * @param $list array
+ *   List of contexts.
+ *
+ */
+function metatag_context_sort_weight($list) {
+  $context_weight = array();
+  // Build a list of contexts with weight.
+  foreach ($list as $key => $context) {
+    if (isset($context->reactions['metatag_context_reaction']['weight']) &&
+      is_numeric($context->reactions['metatag_context_reaction']['weight'])
+    ) {
+      $weight = $context->reactions['metatag_context_reaction']['weight'];
+      $context_weight[] = array('name' => $key, 'weight' => $weight);
+    }
+  }
+  // Sort list.
+  uasort($context_weight, 'drupal_sort_weight');
+
+  $sorted_list = $list;
+  foreach ($context_weight as $key => $item) {
+    $weight = $item['weight'];
+    $name = $item['name'];
+
+    if ($weight < 0) {
+      unset($sorted_list[$name]);
+      // Push to the top.
+      $sorted_list = array_merge(array($name => $list[$name]), $sorted_list);
+    }
+
+    if ($weight > 0) {
+      unset($sorted_list[$name]);
+      // Push to the bottom.
+      $sorted_list[$name] = $list[$name];
+    }
+  }
+
+  return $sorted_list;
+}
