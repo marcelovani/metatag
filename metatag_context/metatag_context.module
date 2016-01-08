@@ -82,7 +82,7 @@ function metatag_context_context_page_reaction() {
 }
 
 /**
- * Implements hook_page_build().
+ * Implements hook_page_alter().
  */
 function metatag_context_page_alter(&$page) {
   // Load the meta tags that have been generated for this page.
