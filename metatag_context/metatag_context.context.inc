@@ -138,7 +138,10 @@ class metatag_context_reaction extends context_reaction {
           }
 
           // Add this context to the list of instances.
-          $instance_names[] = $context->name;
+          $weight = isset($context->reactions['metatag_context_reaction']['weight'])
+            ? $context->reactions['metatag_context_reaction']['weight']
+            : 0;
+          $instance_names[] = array('name' => $context->name, 'weight' => $weight);
         }
       }
 
@@ -147,9 +150,14 @@ class metatag_context_reaction extends context_reaction {
         // Load the global defaults.
         $metatags += metatag_config_load_with_defaults('');
 
+        // Sort by weight.
+        uasort($instance_names, 'drupal_sort_weight');
+
+        // Keep names only.
+        $instance_names = array_map('current', $instance_names);
+
         // Compile the identifier for this combination based on the context
         // names.
-        asort($instance_names);
         $instance = 'context:' . implode(',', $instance_names);
         $options['instance'] = $instance;
 
