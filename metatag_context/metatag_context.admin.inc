@@ -9,7 +9,6 @@
  */
 function metatag_context_context_overview() {
   $contexts = context_enabled_contexts(TRUE);
-  $contexts = metatag_context_sort_weight($contexts);
 
   $header = array(t('Name'), t('Paths'), t('Weight'), t('Operations'));  $rows = array();
 
@@ -24,13 +23,15 @@ function metatag_context_context_overview() {
         l(t('Delete'), 'admin/config/search/metatags/context/' . $context->name . '/delete', array('query' => array('destination' => 'admin/config/search/metatags/context'))),
       );
       $rows[] = array(
-        $context->name,
-        isset($context->conditions['path']) ? htmlspecialchars(implode(', ', $context->conditions['path']['values'])) : t('No path condition.'),
-        isset($context->reactions['metatag_context_reaction']['weight']) ? $context->reactions['metatag_context_reaction']['weight'] : 0,
-        implode(' | ', $ops),
+        'name' => $context->name,
+        'path' => isset($context->conditions['path']) ? htmlspecialchars(implode(', ', $context->conditions['path']['values'])) : t('No path condition.'),
+        'weight' => isset($context->reactions['metatag_context_reaction']['weight']) ? $context->reactions['metatag_context_reaction']['weight'] : 0,
+        'ops' => implode(' | ', $ops),
       );
     }
   }
+  uasort($rows, 'drupal_sort_weight');
+
   return theme('table', array('header' => $header, 'rows' => $rows, 'caption' => $caption));
 }
 
