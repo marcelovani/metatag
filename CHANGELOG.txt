@@ -72,6 +72,28 @@ By DamienMcKenna: Some commit messages were in the wrong place.
 #2619438 by DamienMcKenna: Improve documentation on the mobile subtheme.
 #2597301 by DamienMcKenna: Only use the new locale-URL tokens when translations
   modules are enabled.
+#2180031 by DamienMcKenna: Fixed double-encoding of tokens.
+#2635144 by DamienMcKenna: Added the apple-itunes-app meta tag.
+#1904542 by DamienMcKenna: Added a bunch of Windows and IE -focused meta tags.
+#2636132 by SpaghettiBolognese: Inconsistency in submodule naming.
+#2637026 by matthewordie, DamienMcKenna: Mention in the og:image meta tag how
+  Facebook will handle multiple images (It defaults to the largest one).
+#2564483 by DamienMcKenna, drupov, mas0h, das-peter, pwiniacki, sylus, webflo,
+  Gábor Hojtsy, pjonckiere, k_zoltan: Fixed i18n integration for core module and
+  all submodules; added over 1,000 new test assertions in major expansion of the
+  test suite.
+#2644156 by DamienMcKenna: Default value of image_src meta tag for user entity
+  was set incorrectly.
+#2639170 by anthonyleach: Use the correct hooks to add the RDF namespaces.
+#2628558 by marcelovani: Renamed the bundled Context definitions to avoid
+  conflicts.
+By DamienMcKenna: Fixed an accidental removal of the Token v1.6 requirement.
+#2622662 by rollsd: Adjusted logic to fix problem with entity types that only
+  have one bundle.
+#2648804 by DamienMcKenna: Removed some unfinished code from
+  metatag_metatags_delete_multiple().
+#2587725 by DamienMcKenna: Fixed display of meta tag labels in localized entity
+  & config forms.
 
 
 Metatag 7.x-1.7, 2015-07-24

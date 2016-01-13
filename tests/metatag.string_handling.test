@@ -7,7 +7,7 @@
 /**
  * Tests the Metatag string handling.
  */
-class MetatagStringHandlingTest extends MetatagTestHelper {
+class MetatagCoreStringHandlingTest extends MetatagTestHelper {
 
   /**
    * @var $admin_user
@@ -20,7 +20,7 @@ class MetatagStringHandlingTest extends MetatagTestHelper {
    */
   public static function getInfo() {
     return array(
-      'name' => 'Metatag string tests',
+      'name' => 'Metatag core tests for string handling',
       'description' => "Tests Metatag's string handling.",
       'group' => 'Metatag',
     );
@@ -91,6 +91,7 @@ class MetatagStringHandlingTest extends MetatagTestHelper {
       'metatags[und][description][value]' => $desc_original,
     );
     $this->drupalPost('admin/config/search/metatags/config/node', $edit, 'Save');
+    $this->assertResponse(200);
 
     // Load the configuration object.
     $result = db_select('metatag_config', 'mc')
@@ -112,6 +113,7 @@ class MetatagStringHandlingTest extends MetatagTestHelper {
       'title' => $title_original,
     ));
     $this->drupalGet('node/' . $node->nid);
+    $this->assertResponse(200);
 
     // assertTitle() uses xpath, which parses the HTML, so all of the HTML
     // entities will be converted automagically.
@@ -123,6 +125,21 @@ class MetatagStringHandlingTest extends MetatagTestHelper {
     // because assertRaw() checks the raw HTML, not the parsed strings like
     // xpath does.
     $this->assertRaw($title_encoded, 'Confirmed the node title tag is encoded.');
+
+    // Test a few other versions of the title, to ensure it isn't broken
+    // on another tag.
+    $xpath = $this->xpath("//meta[@name='dcterms.title']");
+    $this->assertEqual($xpath[0]['content'], $title_original);
+    $this->assertNotEqual($xpath[0]['content'], $title_encoded);
+    $this->assertNotEqual($xpath[0]['content'], $title_encodeded);
+    $xpath = $this->xpath("//meta[@property='og:title']");
+    $this->assertEqual($xpath[0]['content'], $title_original);
+    $this->assertNotEqual($xpath[0]['content'], $title_encoded);
+    $this->assertNotEqual($xpath[0]['content'], $title_encodeded);
+    $xpath = $this->xpath("//meta[@name='twitter:title']");
+    $this->assertEqual($xpath[0]['content'], $title_original);
+    $this->assertNotEqual($xpath[0]['content'], $title_encoded);
+    $this->assertNotEqual($xpath[0]['content'], $title_encodeded);
 
     // Again, with xpath the HTML entities will be parsed automagically.
     $xpath = $this->xpath("//meta[@name='description']");

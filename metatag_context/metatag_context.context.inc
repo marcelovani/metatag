@@ -116,7 +116,7 @@ class metatag_context_reaction extends context_reaction {
           }
 
           // Translate all of the meta tags using i18n.
-          metatag_translate_metatags($metadata_array);
+          metatag_translate_metatags($metadata_array, 'metatag_context:' . $context->name);
 
           // Add the meta tags to the output.
           foreach ($metadata_array as $langcode => $tags) {
@@ -178,7 +178,7 @@ function metatag_context_context_default_contexts() {
   $context = new stdClass();
   $context->disabled = TRUE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
-  $context->name = 'user_login';
+  $context->name = 'metatag_context_user_login';
   $context->description = 'A default Metatag:Context definition for the user login page. This needs to be enabled and then it can be customized as needed.';
   $context->tag = 'Metatag';
   $context->conditions = array(
@@ -197,9 +197,11 @@ function metatag_context_context_default_contexts() {
   $context->reactions = array(
     'metatag_context_reaction' => array(
       'metatags' => array(
-        'title' => array(
-          'value' => '[current-page:title] | [site:name]',
-          'default' => '[current-page:title] | [site:name]',
+        'und' => array(
+          'title' => array(
+            'value' => '[current-page:title] | [site:name]',
+            'default' => '[current-page:title] | [site:name]',
+          ),
         ),
       ),
       'metatag_admin' => 1,
@@ -211,7 +213,7 @@ function metatag_context_context_default_contexts() {
   $context = new stdClass();
   $context->disabled = TRUE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
-  $context->name = 'user_register';
+  $context->name = 'metatag_context_user_register';
   $context->description = 'A default Metatag:Context definition for the user registration page. This needs to be enabled and then it can be customized as needed.';
   $context->tag = 'Metatag';
   $context->conditions = array(
@@ -229,9 +231,11 @@ function metatag_context_context_default_contexts() {
   $context->reactions = array(
     'metatag_context_reaction' => array(
       'metatags' => array(
-        'title' => array(
-          'value' => '[current-page:title] | [site:name]',
-          'default' => '[current-page:title] | [site:name]',
+        'und' => array(
+          'title' => array(
+            'value' => '[current-page:title] | [site:name]',
+            'default' => '[current-page:title] | [site:name]',
+          ),
         ),
       ),
       'metatag_admin' => 1,
@@ -244,7 +248,7 @@ function metatag_context_context_default_contexts() {
     $context = new stdClass();
     $context->disabled = TRUE; /* Edit this to true to make a default context disabled initially */
     $context->api_version = 3;
-    $context->name = 'forum';
+    $context->name = 'metatag_context_forum';
     $context->description = 'A default Metatag:Context definition for the main forum page. This needs to be enabled and then it can be customized as needed.';
     $context->tag = 'Metatag';
     $context->conditions = array(
@@ -257,9 +261,11 @@ function metatag_context_context_default_contexts() {
     $context->reactions = array(
       'metatag_context_reaction' => array(
         'metatags' => array(
-          'title' => array(
-            'value' => '[current-page:title] | [site:name]',
-            'default' => '[current-page:title] | [site:name]',
+          'und' => array(
+            'title' => array(
+              'value' => '[current-page:title] | [site:name]',
+              'default' => '[current-page:title] | [site:name]',
+            ),
           ),
         ),
         'metatag_admin' => 1,
@@ -273,7 +279,7 @@ function metatag_context_context_default_contexts() {
     $context = new stdClass();
     $context->disabled = TRUE; /* Edit this to true to make a default context disabled initially */
     $context->api_version = 3;
-    $context->name = 'blog';
+    $context->name = 'metatag_context_blog';
     $context->description = 'A default Metatag:Context definition for the main blog page. This needs to be enabled and then it can be customized as needed. Note: this does not cover the individual user blog pages, only the main blog page.';
     $context->tag = 'Metatag';
     $context->conditions = array(
@@ -286,9 +292,11 @@ function metatag_context_context_default_contexts() {
     $context->reactions = array(
       'metatag_context_reaction' => array(
         'metatags' => array(
-          'title' => array(
-            'value' => '[current-page:title] | [site:name]',
-            'default' => '[current-page:title] | [site:name]',
+          'und' => array(
+            'title' => array(
+              'value' => '[current-page:title] | [site:name]',
+              'default' => '[current-page:title] | [site:name]',
+            ),
           ),
         ),
         'metatag_admin' => 1,

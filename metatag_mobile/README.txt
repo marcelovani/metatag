@@ -4,13 +4,14 @@ This submodule of Metatag adds a number of new meta tags commonly used for
 tailoring the experience of people using mobile devices.
 
 Mobile:
-  <meta name="theme-color" value="[VALUE" />
-  <meta name="MobileOptimized" value="[VALUE" />
-  <meta name="HandheldFriendly" value="[VALUE" />
-  <meta name="viewport" value="[VALUE" />
+  <meta name="theme-color" value="[VALUE]" />
+  <meta name="MobileOptimized" value="[VALUE]" />
+  <meta name="HandheldFriendly" value="[VALUE]" />
+  <meta name="viewport" value="[VALUE]" />
   <meta http-equiv="cleartype" content="[VALUE]" />
 
 iOS:
+  <meta name="apple-itunes-app" content="[VALUE]" />
   <meta name="apple-mobile-web-app-capable" content="[VALUE]" />
   <meta name="apple-mobile-web-app-status-bar-style" content="[VALUE]" />
   <meta name="format-detection" content="[VALUE]" />
@@ -19,6 +20,27 @@ iOS:
 Android:
   <link href="manifest" value="[VALUE]" />
   <link href="alternative" value="android-app://[VALUE]" />
+
+Windows:
+  <meta http-equiv="X-UA-Compatible" content="[VALUE]" />
+  <meta name="application-name" value="[VALUE]" />
+  <meta name="msapplication-allowDomainApiCalls" value="[VALUE]" />
+  <meta name="msapplication-allowDomainMetaTags" value="[VALUE]" />
+  <meta name="msapplication-badge" value="[VALUE]" />
+  <meta name="msapplication-config" value="[VALUE]" />
+  <meta name="msapplication-navbutton" value="[VALUE]" />
+  <meta name="msapplication-notification" value="[VALUE]" />
+  <meta name="msapplication-square150x150logo" value="[VALUE]" />
+  <meta name="msapplication-square310x310logo" value="[VALUE]" />
+  <meta name="msapplication-square70x70logo" value="[VALUE]" />
+  <meta name="msapplication-wide310x150logo" value="[VALUE]" />
+  <meta name="msapplication-starturl" value="[VALUE]" />
+  <meta name="msapplication-task" value="[VALUE]" />
+  <meta name="msapplication-task-separator" value="[VALUE]" />
+  <meta name="msapplication-tilecolor" value="[VALUE]" />
+  <meta name="msapplication-tileimage" value="[VALUE]" />
+  <meta name="msapplication-tooltip" value="[VALUE]" />
+  <meta name="msapplication-window" value="[VALUE]" />
 
 
 Configuration
@@ -29,7 +51,7 @@ functions, e.g.:
 /**
  * Implements theme_metatag_mobile_android_app().
  *
-  * Remove the default prefix.
+ * Remove the default prefix.
  */
 function MYTHEME_metatag_mobile_android_app($variables) {
   // Pass everything through to the normal 'link' tag theme.
@@ -44,7 +66,7 @@ function MYTHEME_metatag_mobile_android_app($variables) {
 /**
  * Implements theme_metatag_mobile_ios_app().
  *
-  * Remove the default prefix.
+ * Remove the default prefix.
  */
 function MYTHEME_metatag_mobile_ios_app($variables) {
   // Pass everything through to the normal 'link' tag theme.
