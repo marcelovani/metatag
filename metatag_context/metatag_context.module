@@ -85,6 +85,12 @@ function metatag_context_context_page_reaction() {
  * Implements hook_page_alter().
  */
 function metatag_context_page_alter(&$page) {
+  // By default do not add meta tags to admin pages. To enable meta tags on
+  // admin pages set the 'metatag_tag_admin_pages' variable to TRUE.
+  if (path_is_admin(current_path()) && !variable_get('metatag_tag_admin_pages', FALSE)) {
+    return;
+  }
+
   // Load the meta tags that have been generated for this page.
   $metatags = drupal_static('metatag_context', array());
 
@@ -92,6 +98,23 @@ function metatag_context_page_alter(&$page) {
     // The page region can be changed.
     $region = variable_get('metatag_page_region', 'content');
     $page[$region]['metatags']['context'] = $metatags;
+  }
+}
+
+/**
+ * Implements hook_preprocess_html().
+ */
+function metatag_context_preprocess_html(&$variables) {
+  // By default do not add meta tags to admin pages. To enable meta tags on
+  // admin pages set the 'metatag_tag_admin_pages' variable to TRUE.
+  if (path_is_admin(current_path()) && !variable_get('metatag_tag_admin_pages', FALSE)) {
+    return;
+  }
+
+  $metadata = drupal_static('metatag_context');
+
+  if (isset($metadata['metadata_title'])) {
+    $variables['head_title'] = token_replace($metadata['metadata_title']);
   }
 }
 
